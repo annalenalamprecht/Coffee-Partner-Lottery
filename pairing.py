@@ -33,9 +33,10 @@ with open(all_pairs_csv, "r") as file:
 formdata = pd.read_csv(participants_csv)
 participants = list(set(formdata[header_email]))
 
-# if odd number of participants, remove gamemaster from the list
+# if odd number of participants, add/remove gamemaster from the list
 if len(participants)%2 != 0:
-    participants.remove(gamemaster_email)
+    participants.append(gamemaster_email)
+#    participants.remove(gamemaster_email)
 
 # init set of new pairs
 npairs = set()
