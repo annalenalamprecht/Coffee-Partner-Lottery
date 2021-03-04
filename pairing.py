@@ -72,9 +72,17 @@ while not new_pairs_found:   # to do: add a maximum number of tries
         npairs = set()
         nparticipants = copy.deepcopy(participants)
  
-# print out new pairs
-print(npairs)
 
+# print out new pairs
+print("------------------------")
+print("Today's coffee partners:")
+print("------------------------")
+
+for pair in npairs:
+    pair = list(pair)
+    print(pair[0], "and", pair[1])
+
+    
 # append pairs to masterfile
 with open(all_pairs_csv, "a") as file:
     for pair in npairs:
