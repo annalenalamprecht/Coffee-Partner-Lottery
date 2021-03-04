@@ -2,6 +2,7 @@ import pandas as pd
 import csv
 import random
 import copy
+import os
 
 # path to the CSV files with participant data
 participants_csv = "Coffee Partner Lottery participants.csv"
@@ -24,10 +25,11 @@ all_pairs_csv = "all_pairs.csv"
 opairs = set()
 
 # load all previous pairings (to avoid redundancies)
-with open(all_pairs_csv, "r") as file:
-    csvreader = csv.reader(file, delimiter=',')
-    for row in csvreader:
-        opairs.add((row[0],row[1]))
+if os.path.exists(all_pairs_csv):
+    with open(all_pairs_csv, "r") as file:
+        csvreader = csv.reader(file, delimiter=',')
+        for row in csvreader:
+            opairs.add((row[0],row[1]))
         
 # get participant's emails, remove duplicates, create list
 formdata = pd.read_csv(participants_csv)
@@ -80,11 +82,18 @@ print("------------------------")
 
 for pair in npairs:
     pair = list(pair)
-    print(pair[0], "and", pair[1])
-
+    print(f"{formdata[formdata[header_email]==pair[0]].iloc[0][header_name]} "
+          f"({pair[0]}) and "
+          f"{formdata[formdata[header_email]==pair[1]].iloc[0][header_name]} "
+          f"({pair[1]})")
     
 # append pairs to masterfile
-with open(all_pairs_csv, "a") as file:
+if os.path.exists(all_pairs_csv):
+    mode = "a"
+else:
+    mode = "w"
+
+with open(all_pairs_csv, mode) as file:
     for pair in npairs:
         pair = list(pair)
         file.write(pair[0] + "," + pair[1] + "\n")
@@ -100,4 +109,5 @@ with open(new_pairs_csv, "w") as file:
                    "," + pair[1] + "\n")
              
 # print finishing message
+print()
 print("Job done.")
