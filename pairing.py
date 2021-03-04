@@ -11,15 +11,26 @@ participants_csv = "Coffee Partner Lottery participants.csv"
 header_name = "Your name:"
 header_email = "Your e-mail:"
 
-# e-mail of game master, used as a "joker"
-gamemaster_email = "name@email.com" ## change to game master's e-mail
+# name and address of game master, used as a "joker"
+gamemaster_name = "Jon Dory"
+gamemaster_email = "jondory@noreply.org"
 
 # path to CSV file that stores the pairings of this round
 new_pairs_csv = "new_pairs.csv"
 
 # path to CSV file that stores all pairings (to avoid repetition)
 all_pairs_csv = "all_pairs.csv"
+        
+# load participant's data
+formdata = pd.read_csv(participants_csv)
 
+# if odd number of participants, add gamemaster
+if len(formdata)%2 != 0:
+    new_row = {header_name:gamemaster_name, header_email:gamemaster_email}
+    formdata = formdata.append(new_row, ignore_index=True)
+
+# remove duplicates, create list
+participants = list(set(formdata[header_email]))
 
 # init set of old pairs
 opairs = set()
@@ -30,15 +41,6 @@ if os.path.exists(all_pairs_csv):
         csvreader = csv.reader(file, delimiter=',')
         for row in csvreader:
             opairs.add((row[0],row[1]))
-        
-# get participant's emails, remove duplicates, create list
-formdata = pd.read_csv(participants_csv)
-participants = list(set(formdata[header_email]))
-
-# if odd number of participants, add/remove gamemaster from the list
-if len(participants)%2 != 0:
-    participants.append(gamemaster_email)
-#    participants.remove(gamemaster_email)
 
 # init set of new pairs
 npairs = set()
