@@ -12,7 +12,7 @@ header_name = "Your name:"
 header_email = "Your e-mail:"
 
 # e-mail of game master, used as a "joker"
-gamemaster_email = "a.l.lamprecht@uu.nl"
+gamemaster_email = "name@email.com" ## change to game master's e-mail
 
 # path to CSV file that stores the pairings of this round
 new_pairs_csv = "new_pairs.csv"
