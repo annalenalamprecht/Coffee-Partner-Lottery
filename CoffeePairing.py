@@ -97,7 +97,13 @@ while not new_pairs_found:   # to do: add a maximum number of tries
     else:
         npairs = set()
         nparticipants = copy.deepcopy(participants)
- 
+
+
+def get_name_tuple(email):
+    return (email, formdata[formdata[header_email] == email].iloc[0][header_name])
+
+
+named_pairs = [(get_name_tuple(pair[0]), get_name_tuple(pair[1])) for pair in npairs]
 
 # assemble output for printout
 output_string = ""
@@ -106,15 +112,13 @@ output_string += "------------------------\n"
 output_string += "Today's coffee partners:\n"
 output_string += "------------------------\n"
 
-for pair in npairs:
-    pair = list(pair)
-    for i in range(0,len(pair)):
-        if i < len(pair) - 1:
-            output_string += formdata[formdata[header_email]==pair[i]].iloc[0][header_name] + " (" + pair[i] + ") and "
-        else:
-            output_string += formdata[formdata[header_email]==pair[i]].iloc[0][header_name] + " (" + pair[i] + ")"
-  
-    output_string += "\n"
+for pair in named_pairs:
+    output_string += "{} ({}) and {} ({})\n".format(
+        pair[0][1],
+        pair[0][0],
+        pair[1][1],
+        pair[1][0],
+    )
     
 # write output to console
 print(output_string)
@@ -126,14 +130,13 @@ with open(new_pairs_txt, "wb") as file:
 # write new pairs into CSV file (for e.g. use in MailMerge)
 with open(new_pairs_csv, "w") as file:
     file.write("name1,email1,name2,email2\n")
-    for pair in npairs:
-        pair = list(pair)
-        for i in range(0,len(pair)):
-            if i < len(pair)-1:
-                file.write(pair[i] + ",")
-            else:
-                file.write(pair[i] + "\n")           
-
+    for pair in named_pairs:
+        file.write("{},{},{},{}\n".format(
+            pair[0][1],
+            pair[0][0],
+            pair[1][1],
+            pair[1][0],
+        ))
 # append pairs to history file
 if os.path.exists(all_pairs_csv):
     mode = "a"
