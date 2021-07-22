@@ -131,9 +131,9 @@ with open(new_pairs_csv, "w") as file:
     for pair in npairs:
         pair = list(pair)
         for i in range(0,len(pair)):
-            name_email_pair = f"{formdata[formdata[header_email] == pair[i]].iloc[0][header_name]}, {pair[i]}"
+            name_email_pair = f"{formdata[formdata[header_email] == pair[i]].iloc[0][header_name]}{DELIMITER} {pair[i]}"
             if i < len(pair)-1:
-                file.write(name_email_pair + DELIMITER)
+                file.write(name_email_pair + DELIMITER + " ")
             else:
                 file.write(name_email_pair + "\n")
                 
