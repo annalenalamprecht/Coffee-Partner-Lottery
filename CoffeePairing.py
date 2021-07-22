@@ -23,10 +23,12 @@ all_pairs_csv = "Coffee Partner Lottery all pairs.csv"
 # init set of old pairs
 opairs = set()
 
+DELIMITER=','
+
 # load all previous pairings (to avoid redundancies)
 if os.path.exists(all_pairs_csv):
     with open(all_pairs_csv, "r") as file:
-        csvreader = csv.reader(file, delimiter=',')
+        csvreader = csv.reader(file, delimiter=DELIMITER)
         for row in csvreader:
             group = []
             for i in range(0,len(row)):
@@ -34,7 +36,7 @@ if os.path.exists(all_pairs_csv):
             opairs.add(tuple(group))
 
 # load participant's data
-formdata = pd.read_csv(participants_csv)
+formdata = pd.read_csv(participants_csv, sep=DELIMITER)
 
 # create duplicate-free list of participants
 participants = list(set(formdata[header_email]))
@@ -124,13 +126,14 @@ with open(new_pairs_txt, "wb") as file:
 
 # write new pairs into CSV file (for e.g. use in MailMerge)
 with open(new_pairs_csv, "w") as file:
-    file.write("name1,email1,name2,email2,name3,email3\n")
+    header = ["name1", "email1", "name2", "email2", "name3", "email3"]
+    file.write(DELIMITER.join(header) + "\n")
     for pair in npairs:
         pair = list(pair)
         for i in range(0,len(pair)):
             name_email_pair = f"{formdata[formdata[header_email] == pair[i]].iloc[0][header_name]}, {pair[i]}"
             if i < len(pair)-1:
-                file.write(name_email_pair + ", ")
+                file.write(name_email_pair + DELIMITER)
             else:
                 file.write(name_email_pair + "\n")
                 
@@ -145,7 +148,7 @@ with open(all_pairs_csv, mode) as file:
         pair = list(pair)
         for i in range(0,len(pair)):
             if i < len(pair)-1:
-                file.write(pair[i] + ",")
+                file.write(pair[i] + DELIMITER)
             else:
                 file.write(pair[i] + "\n")
 
