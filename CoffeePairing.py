@@ -153,6 +153,48 @@ with open(all_pairs_csv, mode) as file:
                 file.write(pair[i] + "\n")
 
 
+# import email
+import smtplib, ssl
+
+smtp_server = "smtp.gmail.com"
+port = 587
+sender_email = "coffeepartneruu@gmail.com"
+password = "egwnmceqwlrawygf"
+
+#send email with group
+# Create a secure SSL context
+context = ssl.create_default_context()
+
+with open('Coffee Partner Lottery new pairs.csv', mode='r') as csv_file:
+    pair_reader = csv.DictReader(csv_file)
+    output_string = ""
+    receiver_email = []
+    for row in pair_reader:
+        output_string = f"{row['name1']}\n{row['name2']}"
+        receiver_email = [f'{row["email1"]}', f'{row["email2"]}']
+        try:
+            server = smtplib.SMTP(smtp_server,port)
+            server.ehlo() # Can be omitted
+            server.starttls(context=context) # Secure the connection
+            server.ehlo() # Can be omitted
+            server.login(sender_email, password)
+            # TODO: Send email here
+            sender_email = "coffeepartneruu@gmail.com"
+            message = f"""Subject: Your coffee group for this week
+ 
+            
+Hi,
+This message is sent from Python.
+Your group for this week is:
+{output_string}"""
+            
+            server.sendmail(sender_email, receiver_email, message)
+        except:
+            # Print any error messages to stdout
+            print("error sending email")
+        finally:
+            server.quit()
+        receiver_email = []
              
 # print finishing message
 print()
