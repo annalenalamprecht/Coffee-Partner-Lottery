@@ -189,9 +189,9 @@ Your group for this week is:
 {output_string}"""
             
             server.sendmail(sender_email, receiver_email, message)
-        except:
+        except Exception as e:
             # Print any error messages to stdout
-            print("error sending email")
+            print(e)
         finally:
             server.quit()
         receiver_email = []
