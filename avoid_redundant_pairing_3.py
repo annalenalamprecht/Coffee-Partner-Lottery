@@ -6,6 +6,12 @@ Created on Wed Mar  8 15:54:39 2023
 """
 import csv
 
+# path to the CSV file with all previous matchings
+all_groups_csv = "Coffee Partner Lottery all groups.csv"
+
+# init dictionary of previous matchings
+previous_matchings = {}
+
 # Function to check if a pairing has been used before
 def is_pairing_used(pairing):
     # Clear the list of people in the pairing and add new people
@@ -17,7 +23,7 @@ def is_pairing_used(pairing):
     people.sort()
     # Convert the list of people to a tuple
     key = tuple(people)
-    previous_matchings = {}
+    
     # Read previous matchings from CSV file into dictionary
     with open(all_groups_csv, mode='r') as file:
         reader = csv.reader(file)
