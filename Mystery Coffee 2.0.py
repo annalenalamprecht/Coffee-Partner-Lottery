@@ -19,31 +19,29 @@ url = f'https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv'
 header_name = "What is your name?"
 header_email = "What is your e-mail?"
 
-# path to TXT file that stores the pairings of this round
-new_pairs_txt = "Coffee Partner Lottery new pairs.txt"
+# path to TXT file that stores the groups of this round
+new_groups_txt = "Coffee Partner Lottery new groups.txt"
 
-# path to CSV file that stores the pairings of this round
-new_pairs_csv = "Coffee Partner Lottery new pairs.csv"
+# path to CSV file that stores the groups of this round
+new_groups_csv = "Coffee Partner Lottery new groups.csv"
 
-# path to CSV file that stores all pairings (to avoid repetition)
-all_pairs_csv = "Coffee Partner Lottery all pairs.csv"
+# path to CSV file that stores all groups (to avoid repetition)
+all_groups_csv = "Coffee Partner Lottery all groups.csv"
         
-# init set of old pairs
-opairs = set()
+# init set of old groups
+ogroups = set()
 
 DELIMITER=','
 
-# load all previous pairings (to avoid redundancies)
-if os.path.exists(all_pairs_csv):
-    with open(all_pairs_csv, "r") as file:
->>>>>>> main
+# load all previous groups (to avoid redundancies)
+if os.path.exists(all_groups_csv):
+    with open(all_groups_csv, "r") as file:
         csvreader = csv.reader(file, delimiter=DELIMITER)
         for row in csvreader:
             group = []
             for i in range(0,len(row)):
                 group.append(row[i])                        
-
-            opairs.add(tuple(group))
+            ogroups.add(tuple(group))
 
 #load participant's data from the online google sheet
 formdata = pd.read_csv(url, sep=DELIMITER)
@@ -180,11 +178,11 @@ password = "egwnmceqwlrawygf"
 # Create a secure SSL context
 context = ssl.create_default_context()
 
-with open('Coffee Partner Lottery new pairs.csv', mode='r') as csv_file:
-    pair_reader = csv.DictReader(csv_file)
+with open('Coffee Partner Lottery new groups.csv', mode='r') as csv_file:
+    groups_reader = csv.DictReader(csv_file)
     output_string = ""
     receiver_email = []
-    for row in pair_reader:
+    for row in groups_reader:
         output_string = f"{row['name1']}\n{row['name2']}"
         receiver_email = [f'{row["email1"]}', f'{row["email2"]}']
         try:
