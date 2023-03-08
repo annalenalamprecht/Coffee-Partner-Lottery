@@ -52,3 +52,13 @@ def is_pairing_used(pairing):
         # Add the pairing to the dictionary of previous matchings
         previous_matchings[key] = True
         return False
+    
+# load all previous pairings (to avoid redundancies)
+if os.path.exists(all_pairs_csv):
+    with open(all_pairs_csv, "r") as file:
+        csvreader = csv.reader(file, delimiter=DELIMITER)
+        for row in csvreader:
+            group = []
+            for i in range(0,len(row)):
+                group.append(row[i])                        
+            opairs.add(tuple(group))
