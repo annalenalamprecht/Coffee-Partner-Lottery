@@ -4,12 +4,13 @@ import random
 import copy
 import os
 
-# path to the CSV files with participant data
-participants_csv = "Coffee Partner Lottery participants.csv"
+# link to the online file with all participants linked to google form
+SHEET_ID = '1G1Kbl63qxe4FoTaBuBrmKCtodseAqjhbt2UN8pfRsfI'
+url = f'https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv'
 
 # header names in the CSV file (name and e-mail of participants)
-header_name = "Your name:"
-header_email = "Your e-mail:"
+header_name = "What is your name?"
+header_email = "What is your e-mail?"
 
 # path to TXT file that stores the pairings of this round
 new_pairs_txt = "Coffee Partner Lottery new pairs.txt"
@@ -35,8 +36,8 @@ if os.path.exists(all_pairs_csv):
                 group.append(row[i])                        
             opairs.add(tuple(group))
 
-# load participant's data
-formdata = pd.read_csv(participants_csv, sep=DELIMITER)
+#load participant's data from the online google sheet
+formdata = pd.read_csv(url, sep=DELIMITER)
 
 # create duplicate-free list of participants
 participants = list(set(formdata[header_email]))
@@ -153,6 +154,48 @@ with open(all_pairs_csv, mode) as file:
                 file.write(pair[i] + "\n")
 
 
+# import email
+import smtplib, ssl
+
+smtp_server = "smtp.gmail.com"
+port = 587
+sender_email = "coffeepartneruu@gmail.com"
+password = "egwnmceqwlrawygf"
+
+#send email with group
+# Create a secure SSL context
+context = ssl.create_default_context()
+
+with open('Coffee Partner Lottery new pairs.csv', mode='r') as csv_file:
+    pair_reader = csv.DictReader(csv_file)
+    output_string = ""
+    receiver_email = []
+    for row in pair_reader:
+        output_string = f"{row['name1']}\n{row['name2']}"
+        receiver_email = [f'{row["email1"]}', f'{row["email2"]}']
+        try:
+            server = smtplib.SMTP(smtp_server,port)
+            server.ehlo() # Can be omitted
+            server.starttls(context=context) # Secure the connection
+            server.ehlo() # Can be omitted
+            server.login(sender_email, password)
+            # TODO: Send email here
+            sender_email = "coffeepartneruu@gmail.com"
+            message = f"""Subject: Your coffee group for this week
+ 
+            
+Hi,
+This message is sent from Python.
+Your group for this week is:
+{output_string}"""
+            
+            server.sendmail(sender_email, receiver_email, message)
+        except Exception as e:
+            # Print any error messages to stdout
+            print(e)
+        finally:
+            server.quit()
+        receiver_email = []
              
 # print finishing message
 print()
