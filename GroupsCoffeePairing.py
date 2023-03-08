@@ -117,7 +117,7 @@ while not new_groups_found:   # to do: add a maximum number of tries
 
     # check if all new groups are indeed new, else reset
     if ngroups.isdisjoint(ogroups):
-        new_groups_found3 = True
+        new_groups_found = True
     else:
         ngroups = set()
         nparticipants = copy.deepcopy(participants)
