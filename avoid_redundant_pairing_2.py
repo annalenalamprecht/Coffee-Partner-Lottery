@@ -34,24 +34,6 @@ def generate_pairing(people, group_sizes):
     # Return the pairing
     return groups
 
-# Function to check if a pairing has been used before
-def is_pairing_used(pairing):
-    # Clear the list of people in the pairing and add new people
-    people = []
-    for group in pairing:
-        for person in group:
-            people.append(person)
-    # Sort the list of people
-    people.sort()
-    # Convert the list of people to a tuple
-    key = tuple(people)
-    # Check if the pairing has been used before
-    if key in previous_matchings:
-        return True
-    else:
-        # Add the pairing to the dictionary of previous matchings
-        previous_matchings[key] = True
-        return False
     
 # load all previous pairings (to avoid redundancies)
 if os.path.exists(all_pairs_csv):
