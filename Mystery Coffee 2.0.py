@@ -29,6 +29,9 @@ new_groups_csv = "Coffee Partner Lottery new groups.csv"
 
 # path to CSV file that stores all groups (to avoid repetition)
 all_groups_csv = "Coffee Partner Lottery all groups.csv"
+
+# path to CSV file of conversation starters
+conversation_starters = "conversation_starters.csv"
         
 # init set of old groups
 ogroups = set()
@@ -51,6 +54,10 @@ formdata = pd.read_csv(url, sep=DELIMITER)
 # create duplicate-free list of participants
 participants = list(set(formdata[header_email]))
 
+# load conversation starters
+all_convo_starters = pd.read_csv(conversation_starters)
+convo_starters = list(all_convo_starters.iloc[:,0])
+convo_starter = random.choice(convo_starters)
 
  # init set of new groups
 ngroups = set()
@@ -135,6 +142,9 @@ for group in ngroups:
     
 # write output to console
 print(output_string)
+
+# write conversation starter
+print(convo_starter)
 
 # write output into text file for later use
 with open(new_groups_txt, "wb") as file:
