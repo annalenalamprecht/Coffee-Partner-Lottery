@@ -2,8 +2,7 @@
 # Code written by:
 # Sven Berndsen 5679885
 # Nyasha Grecu 
-
-# Chris
+# Christos Psaropoulos 8757976
 # Marieke
 
 import pandas as pd
@@ -93,41 +92,44 @@ def make_group(size):
     plist.sort() # sort list alphabetically
     ngroups.add(tuple(plist)) # add created group to list of groups
     
-#############CHRISTOS#############
 # try creating new groups until successful
 max_attempts = 10
 attempts = 0
 new_groups_found = False
-while not new_groups_found and attempts < max_attempts: # to do: add a maximum number of tries
-    attempts += 1   
-  
+while not new_groups_found and attempts < max_attempts:
+    attempts += 1
+
     # Calculate remainder when dividing number of participants by chosen group size
-    remainder = len(participants)%group_size
-    
+    remainder = len(participants) % group_size
+
     # If there is 2 or more people left over, make a group of this size
     if remainder != 0 and remainder != 1:
         make_group(remainder)
-        
+
     # If there is exactly 1 person left over, create a group with an extra member
     elif remainder == 1:
-        make_group(group_size+1)
-  
+        make_group(group_size + 1)
+
     # while still participants left to group, create groups of the chosen group size
+    nparticipants = copy.deepcopy(participants)  #maybe it's best to put nparticipants = participants[:] instead?
     while len(nparticipants) > 0:
-        make_group(group_size) 
+        make_group(group_size)
+
     try:
         # check if all new groups are indeed new, else reset
-        if len(ngroups - ogroups) == len(ngroups):
+        if len(set(ngroups) - set(ogroups)) == len(ngroups):
             new_groups_found = True
         else:
             ngroups = set()
-            nparticipants = copy.deepcopy(participants)
-    except IndexError:
-       # If ngroups and ogroups have different lengths, continue loop
+            nparticipants = participants[:]
+    except ValueError:   # If ngroups and ogroups have different lengths, continue loop
+    
+    #If after 10 attempts no new groups have been found, the program will procceed with the latest groups
+        if attempts == max_attempts: 
+            print("We tried our best to create new groups and bring together people that hadn't met before. "
+                  "Unfortunately, that wasn't entirely possible. One or more groups might have already met.")
         continue
-###############################################
 
-   
 # assemble output for printout
 output_string = ""
 
@@ -196,36 +198,36 @@ password = "egwnmceqwlrawygf"
 # Create a secure SSL context
 context = ssl.create_default_context()
 
-# with open('Coffee Partner Lottery new groups.csv', mode='r') as csv_file:
-#     groups_reader = csv.DictReader(csv_file)
-#     output_string = ""
-#     receiver_email = []
-#     for row in groups_reader:
-#         output_string = f"{row['name1']}\n{row['name2']}"
-#         receiver_email = [f'{row["email1"]}', f'{row["email2"]}']
-#         try:
-#             server = smtplib.SMTP(smtp_server,port)
-#             server.ehlo() # Can be omitted
-#             server.starttls(context=context) # Secure the connection
-#             server.ehlo() # Can be omitted
-#             server.login(sender_email, password)
-#             # TODO: Send email here
-#             sender_email = "coffeepartneruu@gmail.com"
-#             message = f"""Subject: Your coffee group for this week
+with open('Coffee Partner Lottery new groups.csv', mode='r') as csv_file:
+    groups_reader = csv.DictReader(csv_file)
+    output_string = ""
+    receiver_email = []
+    for row in groups_reader:
+        output_string = f"{row['name1']}\n{row['name2']}"
+        receiver_email = [f'{row["email1"]}', f'{row["email2"]}']
+        try:
+            server = smtplib.SMTP(smtp_server,port)
+            server.ehlo() # Can be omitted
+            server.starttls(context=context) # Secure the connection
+            server.ehlo() # Can be omitted
+            server.login(sender_email, password)
+            # TODO: Send email here
+            sender_email = "coffeepartneruu@gmail.com"
+            message = f"""Subject: Your coffee group for this week
  
             
-# Hi,
-# This message is sent from Python.
-# Your group for this week is:
-# {output_string}"""
+Hi,
+This message is sent from Python.
+Your group for this week is:
+{output_string}"""
             
-#             server.sendmail(sender_email, receiver_email, message)
-#         except Exception as e:
-#             # Print any error messages to stdout
-#             print(e)
-#         finally:
-#             server.quit()
-#         receiver_email = []
+            server.sendmail(sender_email, receiver_email, message)
+        except Exception as e:
+            # Print any error messages to stdout
+            print(e)
+        finally:
+            server.quit()
+        receiver_email = []
              
 # print finishing message
 print()
